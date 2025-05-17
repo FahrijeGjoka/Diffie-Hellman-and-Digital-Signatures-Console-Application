@@ -1,8 +1,12 @@
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.*;
 import java.security.*;
 import java.security.spec.*;
+import java.util.Arrays;
 import java.util.Base64;
 
 public class SecureClient {
@@ -49,7 +53,18 @@ public class SecureClient {
         } else {
             System.out.println("Client: Signature verification failed!");
         }
+        byte[] aesKeyBytes = sharedSecret.toByteArray();
+        aesKeyBytes = Arrays.copyOf(aesKeyBytes, 16); // AES 128-bit key
+        SecretKey aesKey = new SecretKeySpec(aesKeyBytes, "AES");
 
+// Dekriptimi i mesazhit
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.DECRYPT_MODE, aesKey);
+        byte[] encryptedMsg = Base64.getDecoder().decode(in.readLine());
+        byte[] decryptedMsg = cipher.doFinal(encryptedMsg);
+
+// Shfaqja e mesazhit të dekriptuar
+        System.out.println("Client received encrypted message: " + new String(decryptedMsg));
         socket.close();
     }
 }
