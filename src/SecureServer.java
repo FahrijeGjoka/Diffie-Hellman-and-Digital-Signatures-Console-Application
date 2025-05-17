@@ -9,6 +9,17 @@ import java.util.Arrays;
 import java.util.Base64;
 
 public class SecureServer {
+
+    byte[] aesKeyBytes = sharedSecret.toByteArray();
+aesKeyBytes = Arrays.copyOf(aesKeyBytes, 16); /
+SecretKey aesKey = new SecretKeySpec(aesKeyBytes, "AES");
+
+Cipher cipher = Cipher.getInstance("AES");
+cipher.init(Cipher.ENCRYPT_MODE, aesKey);
+byte[] encryptedMsg = cipher.doFinal("This is a secret message".getBytes());
+
+out.println(Base64.getEncoder().encodeToString(encryptedMsg));
+
     public static void main(String[] args) throws Exception {
 
         ServerSocket serverSocket = new ServerSocket(5000);
