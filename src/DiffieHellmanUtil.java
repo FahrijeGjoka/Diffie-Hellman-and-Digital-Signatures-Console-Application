@@ -5,6 +5,13 @@ public class DiffieHellmanUtil {
     // Variablat per numrin prim p, primitive root g, celesin privat, publik dhe sekretin e perbashket
     private BigInteger p, g, privateKey, publicKey, sharedSecret;
     private SecureRandom random;
+    public DiffieHellmanUtil(BigInteger p, BigInteger g) {
+        this.p = p;
+        this.g = g;
+        random = new SecureRandom();
+        privateKey = new BigInteger(512, random);
+        publicKey = g.modPow(privateKey, p);
+    }
 
     public DiffieHellmanUtil() {
         random = new SecureRandom();
