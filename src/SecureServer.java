@@ -1,7 +1,11 @@
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.*;
 import java.security.*;
+import java.util.Arrays;
 import java.util.Base64;
 
 public class SecureServer {
@@ -45,6 +49,19 @@ public class SecureServer {
         out.println(Base64.getEncoder().encodeToString(publicKeyRSA.getEncoded()));
         out.println(digitalSignature);
         out.println(welcomeMsg);
+
+
+        byte[] aesKeyBytes = dhServer.getSharedSecret().toByteArray();
+        aesKeyBytes = Arrays.copyOf(aesKeyBytes, 16); // AES 128-bit key
+        SecretKey aesKey = new SecretKeySpec(aesKeyBytes, "AES");
+
+
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.ENCRYPT_MODE, aesKey);
+        byte[] encryptedMsg = cipher.doFinal("This is a secret message".getBytes());
+
+
+        out.println(Base64.getEncoder().encodeToString(encryptedMsg));
 
 
         socket.close();
