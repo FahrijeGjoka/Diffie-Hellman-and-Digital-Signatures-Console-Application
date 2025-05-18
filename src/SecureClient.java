@@ -15,6 +15,7 @@ public class SecureClient {
         Socket socket = new Socket("localhost", 5000);
         System.out.println("Client: Connected to server.");
 
+
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
@@ -65,6 +66,14 @@ public class SecureClient {
 
 // Shfaqja e mesazhit të dekriptuar
         System.out.println("Client received encrypted message: " + new String(decryptedMsg));
+
+        // Klienti dërgon një mesazh të enkriptuar te serveri
+        String clientMsg = "Pershendetje nga klienti!";
+        cipher.init(Cipher.ENCRYPT_MODE, aesKey);
+        byte[] encryptedClientMsg = cipher.doFinal(clientMsg.getBytes());
+        out.println(Base64.getEncoder().encodeToString(encryptedClientMsg));
+        System.out.println("Client sent encrypted message: " + clientMsg);
+
         socket.close();
     }
 }

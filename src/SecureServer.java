@@ -65,6 +65,14 @@ public class SecureServer {
 
 
         out.println(Base64.getEncoder().encodeToString(encryptedMsg));
+        // Serveri pret një mesazh të enkriptuar nga klienti dhe e dekripton
+        BufferedReader inputReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        String encryptedFromClient = inputReader.readLine();
+
+        Cipher decipher = Cipher.getInstance("AES");
+        decipher.init(Cipher.DECRYPT_MODE, aesKey);
+        byte[] decryptedClientBytes = decipher.doFinal(Base64.getDecoder().decode(encryptedFromClient));
+        System.out.println("Server received encrypted message: " + new String(decryptedClientBytes));
 
 
         socket.close();
